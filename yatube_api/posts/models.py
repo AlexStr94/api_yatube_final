@@ -94,14 +94,8 @@ class Follow(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        existing = Follow.objects.filter(
-            user=self.user,
-            following=self.following
-        ).exists()
         if self.user == self.following:
             raise ValidationError('Нельзя подписаться на самого себя')
-        if existing:
-            raise ValidationError('Такая подписка уже существует')
         super(Follow, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -111,3 +105,4 @@ class Follow(models.Model):
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+        unique_together = (('user', 'following'),)
